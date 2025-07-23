@@ -1,0 +1,42 @@
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+// ---------- 任务调度器 ----------
+func scheduler(tasks []func(), wg *sync.WaitGroup) {
+
+	for i := 0; i < len(tasks); i++ {
+		go func() {
+			tasks[i]()
+			defer wg.Done()
+		}()
+
+	}
+}
+
+func main() {
+
+	var wg sync.WaitGroup
+	wg.Add(3)
+	tasks := []func(){
+		func() {
+			time.Sleep(time.Second * 1)
+			fmt.Println("任务1时间花了1秒！")
+		},
+		func() {
+			time.Sleep(time.Second * 3)
+			fmt.Println("任务2时间花了3秒！")
+		},
+		func() {
+			time.Sleep(time.Second * 6)
+			fmt.Println("任务3时间花了6秒！")
+		},
+	}
+	scheduler(tasks, &wg)
+	wg.Wait()
+	fmt.Println("所有任务都完成！")
+}

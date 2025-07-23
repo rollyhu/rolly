@@ -1,0 +1,32 @@
+package main
+
+import "fmt"
+
+func singleNumber(nums *[]int) int {
+	var maps = map[int]int{}
+	numjs := *nums
+
+	for i := 0; i < len(*nums); i++ {
+		value, exist := maps[numjs[i]]
+		if exist {
+			maps[numjs[i]] = value + 1
+		} else {
+			maps[numjs[i]] = 1
+		}
+
+	}
+	fmt.Print(maps)
+	for key, value := range maps {
+		if value == 1 {
+			return key
+		}
+	}
+	return 0
+}
+func main() {
+
+	s := []int{2, 2, 4, 4, 5}
+	temp := singleNumber(&s)
+	fmt.Print("only one int is :", temp)
+
+}

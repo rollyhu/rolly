@@ -1,0 +1,40 @@
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func producer(ch chan<- int) {
+	for i := 1; i < 101; i++ {
+		fmt.Println("send...：", i)
+		ch <- i
+
+	}
+	close(ch)
+}
+func consumer(ch <-chan int) {
+	for v := range ch {
+		fmt.Println("get...：", v)
+	}
+}
+func main() {
+	ch := make(chan int)
+	go producer(ch)
+	go consumer(ch)
+
+	for {	
+		select {
+		case _, ok := <-ch:
+			if !ok {
+				fmt.Println("通道已关闭！")
+				return
+			}
+		default:
+			{
+				fmt.Println("没有数据！等待中.....")
+				time.Sleep(50 * time.Millisecond)
+			}
+		}
+	}
+}

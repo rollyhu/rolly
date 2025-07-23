@@ -1,0 +1,34 @@
+package main
+
+import "fmt"
+
+// ---------- 任务调度器 ----------
+type Shape interface {
+	Area()
+	Perimeter()
+}
+
+type Rectangle struct{}
+type Circle struct{}
+
+func (*Rectangle) Area() {
+	fmt.Println("Rectangle实现了Area()")
+}
+func (*Circle) Area() {
+	fmt.Println("Circle实现了Area()")
+}
+func (*Rectangle) Perimeter() {
+	fmt.Println("Rectangle实现了Perimeter()")
+}
+func (*Circle) Perimeter() {
+	fmt.Println("Circle实现了Perimeter()")
+}
+func main() {
+	rectangle := Rectangle{}
+	rectangle.Area()
+	rectangle.Perimeter()
+	circle := Circle{}
+	circle.Area()
+	circle.Perimeter()
+
+}

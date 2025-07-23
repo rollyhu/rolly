@@ -1,0 +1,26 @@
+package main
+
+import "fmt"
+
+type Person struct {
+	name string
+	age  int
+}
+type Employee struct {
+	employeeID string
+	person     Person
+	// PrintInfo  func()
+}
+
+func PrintInfo(p Employee) {
+	fmt.Println(p)
+}
+
+func main() {
+	var p Employee = Employee{
+		employeeID: "1231",
+		person:     Person{name: "rolly", age: 22},
+	}
+	PrintInfo(p)
+
+}

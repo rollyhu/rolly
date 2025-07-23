@@ -1,0 +1,17 @@
+package main
+
+import "fmt"
+
+func adds(e *int) int {
+	return *e + 10
+}
+func main() {
+
+	var g = 20
+
+	var ss = adds(&g)
+	fmt.Print(ss)
+
+	/////////////////////////////
+
+}

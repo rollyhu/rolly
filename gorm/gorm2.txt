@@ -1,0 +1,178 @@
+package main
+
+import (
+	"fmt"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+)
+
+type Accounts struct {
+	ID      uint
+	Balance float32
+}
+
+type Transactions struct {
+	ID              uint
+	From_account_id uint
+	To_account_id   uint
+	Amount          float32
+}
+
+type Employees struct {
+	ID         uint    `db:"ID"`
+	Name       string  `db:"Name"`
+	Department string  `db:"Department"`
+	Salary     float64 `db:"Salary"`
+}
+
+//	type User struct {
+//		ID       int    `db:"id"`
+//		Username string `db:"username"`
+//		Email    string `db:"email"`
+//	}
+type User struct {
+	gorm.Model
+	Name  string
+	Posts []Post
+}
+type Post struct {
+	gorm.Model
+	Nr       string
+	Comments []Comment
+	UserId   uint
+}
+type Comment struct {
+	gorm.Model
+	Pl     string
+	PostId uint
+}
+
+// 为 Post 模型添加一个钩子函数，在文章创建时自动更新用户的文章数量统计字段。
+func (p *Post) AfterCreate(tx *gorm.DB) (err error) {
+	var resl []struct {
+		UID   uint
+		Count uint
+	}
+	fmt.Println("after  Create...")
+	tx.Model(&Post{}).Select("user_id as uid,count(1) as Count").Where("user_id=?", p.UserId).Group("user_id").Find(&resl)
+	fmt.Println(resl)
+	return
+}
+
+// 为 Comment 模型添加一个钩子函数，在评论删除时检查文章的评论数量，如果评论数量为 0，则更新文章的评论状态为 "无评论"
+func (c *Comment) BeforeDelete(tx *gorm.DB) (err error) {
+	fmt.Println("BeforeDelete  delete...id=", c.ID)
+	var rss struct {
+		PID uint `gorm:"column:post_id"`
+	}
+	var resl struct {
+		PID   uint
+		Count uint
+	}
+	tx.Debug().Model(&Comment{}).Select("post_id").Where("id=?", c.ID).First(&rss)
+	fmt.Println("after  delete...postid=", rss)
+	tx.Debug().Model(&Comment{}).Select("post_id as PID,count(1) as Count").Where("post_id=?", rss.PID).Group("post_id").Find(&resl)
+	if resl.Count == 0 {
+		fmt.Println("无评论")
+	}
+	return nil
+}
+func main() {
+
+	db, err := gorm.Open(mysql.Open("root:root@tcp(127.0.0.1:3306)/web3?charset=utf8mb4&parseTime=True&loc=Local"))
+	if err != nil {
+		panic(err)
+	}
+	// db.Create(&Post{Nr: "123123", UserId: 2})
+	//钩子函数
+	var cc Comment
+	cc.ID = 1
+	db.Delete(&cc)
+	// db.AutoMigrate(&User{})
+	// db.AutoMigrate(&Post{})
+	// db.AutoMigrate(&Comment{})
+	// 写Go代码，使用Gorm查询某个用户发布的所有文章及其对应的评论信息。
+	// var user1 User = User{
+	// 	Name: "rollycc1",
+	// 	Posts: []Post{{
+	// 		Nr: "neirong1",
+	// 		Comments: []Comment{
+	// 			{Pl: "pl11"}, {Pl: "pl21"}, {Pl: "pl21"}, {Pl: "pl21"},
+	// 		},
+	// 	}, {
+	// 		Nr: "neirong2",
+	// 		Comments: []Comment{
+	// 			{Pl: "pl3"}, {Pl: "pl4"},
+	// 		},
+	// 	},
+	// 	},
+	// }
+	// var user2 User = User{
+	// 	Name: "rolly",
+	// 	Posts: []Post{{
+	// 		Nr: "neirong3",
+	// 		Comments: []Comment{
+	// 			{Pl: "pl5"}, {Pl: "pl6"},
+	// 		},
+	// 	}, {
+	// 		Nr: "neirong4",
+	// 		Comments: []Comment{
+	// 			{Pl: "pl7"}, {Pl: "pl8"},
+	// 		},
+	// 	},
+	// 	},
+	// }
+	// db.Create(&user1)
+	// var users []User
+	// db.Preload("Posts.Comments").Find(&users)
+	// fmt.Println(users)
+	// 编写Go代码，使用Gorm查询评论数量最多的文章信息。
+	// var resluts []struct {
+	// 	PostId int64
+	// 	Nr     string
+	// 	Cc     int64
+	// 	Aouth  int64
+	// }
+
+	// db.Debug().Model(&Post{}).Select("posts.Id as PostId,posts.nr,posts.user_id as Aouth,count(*) as cc").Joins("left join comments on posts.Id=comments.post_id").Joins("left join users on posts.user_id=users.id").Group("posts.Id,posts.nr,posts.user_id").Order("count(*) desc").First(&resluts)
+	// // fmt.Println(err1)
+	// // db.Model(&Post{}).Select().Joins("left join ")
+	// fmt.Println(resluts)
+
+	//事务语句
+	// db.AutoMigrate(&Accounts{})
+	// db.AutoMigrate(&Transactions{})
+	// db.Create(&[]Accounts{Accounts{Balance: 100}, Accounts{Balance: 100}})
+	// db.Transaction(func(tx *gorm.DB) error {
+	// 	// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
+	// 	if err := tx.Create(&Transactions{From_account_id: 1, To_account_id: 2, Amount: 100}).Error; err != nil {
+	// 		// 返回任何错误都会回滚事务
+	// 		return err
+	// 	}
+	// 	//获取余额
+	// 	account1 := Accounts{}
+	// 	tx.Debug().Where("ID=?", 1).Select("Balance").First(&account1)
+	// 	fmt.Println("bal1:", account1.Balance)
+	// 	account2 := Accounts{}
+	// 	tx.Debug().Where("ID=?", 2).Select("Balance").First(&account2)
+	// 	fmt.Println("bal2:", account2.Balance)
+
+	// 	if err := tx.Model(&Accounts{}).Where("ID=?", 1).Update("Balance", account1.Balance-100).Error; err != nil {
+	// 		// 返回任何错误都会回滚事务
+	// 		return err
+	// 	}
+	// 	if err := tx.Model(&Accounts{}).Where("ID=?", 2).Update("Balance", account1.Balance+100).Error; err != nil {
+	// 		// 返回任何错误都会回滚事务
+	// 		return err
+	// 	}
+	// 	// if account1.Balance == 100 {
+	// 	// 	fmt.Println("account1.Balance == 100...")
+	// 	// 	return errors.New("bueng100")
+	// 	// }
+
+	// 	return nil
+	// })
+	//使用SQL扩展库进行查询
+
+}

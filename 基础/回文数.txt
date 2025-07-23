@@ -1,0 +1,29 @@
+package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+func isPalindrome(x int) bool {
+	str := strconv.Itoa(x)
+	fmt.Println(str)
+	var runes []rune = []rune(str)
+	runes1 := make([]rune, len(runes))
+	for i := len(runes) - 1; i >= 0; i-- {
+		runes1[len(runes)-1-i] = runes[i]
+	}
+	fmt.Println(string(runes))
+	fmt.Println(string(runes1))
+	if string(runes) == string(runes1) {
+		return true
+	} else {
+		return false
+	}
+
+}
+
+func main() {
+	print(isPalindrome(123321))
+
+}

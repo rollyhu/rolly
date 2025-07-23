@@ -1,0 +1,27 @@
+package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+func removeDuplicates(nums []int) int {
+	maps := map[int]int{}
+	tmps := []int{}
+	for i := 0; i < len(nums); i++ {
+		maps[nums[i]] = 1
+	}
+	for key, _ := range maps {
+		tmps = append(tmps, key)
+	}
+	sort.Ints(tmps)
+	fmt.Print(tmps)
+	return len(tmps)
+}
+
+func main() {
+
+	nums := []int{1, 1, 2}
+	removeDuplicates(nums)
+
+}

@@ -1,0 +1,36 @@
+package main
+
+import (
+	"fmt"
+)
+
+func longestCommonPrefix(strs []string) string {
+	result := []rune{}
+	firStr := strs[0]
+	temp := []rune(firStr)
+on1:
+	for i := 0; i < len(temp); i++ {
+		fmt.Println(string(temp[i]))
+
+		for j := 0; j < len(strs); j++ {
+			tt := strs[j]
+			ttRunes := []rune(tt)
+			if i > len(ttRunes)-1 {
+				break on1
+			}
+			if temp[i] != ttRunes[i] {
+				break on1
+			}
+			if temp[i] == ttRunes[i] && j == len(strs)-1 {
+				result = append(result, temp[i])
+			}
+		}
+	}
+	return string(result)
+
+}
+
+func main() {
+	str := []string{"abc", "abcd", "ab"}
+	fmt.Println(longestCommonPrefix(str))
+}

@@ -1,0 +1,31 @@
+package main
+
+import (
+	"fmt"
+)
+
+func twoSum(nums []int, target int) []int {
+	reslut := make([]int, 2)
+f:
+	for i := 0; i < len(nums); i++ {
+		x := nums[i]
+		fmt.Println("x:", x)
+		for j := i + 1; j < len(nums); j++ {
+			fmt.Println("x+nums[j]:", x+nums[j])
+			if x+nums[j] == target {
+				reslut[0] = i
+				reslut[1] = j
+				break f
+			}
+		}
+	}
+	fmt.Println(reslut)
+	return reslut
+}
+
+func main() {
+	nums := []int{2, 7, 11, 15}
+	target := 17
+	twoSum(nums, target)
+	fmt.Print(nums)
+}

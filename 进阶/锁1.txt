@@ -1,0 +1,43 @@
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+// 安全计数器
+
+type SafeCounter struct {
+	mu    sync.Mutex
+	count int
+}
+
+func (safeCounter *SafeCounter) js() {
+	safeCounter.mu.Lock()
+	defer safeCounter.mu.Unlock()
+	for i := 1; i <= 1000; i++ {
+		safeCounter.count++
+	}
+	// safeCounter.mu.Unlock()
+
+}
+func main() {
+
+	var sc SafeCounter = SafeCounter{count: 0}
+	var wg sync.WaitGroup
+
+	for i := 0; i < 10; i++ {
+		go func() {
+			// for i := 0; i < 1000; i++ {
+			sc.js()
+			// }
+
+		}()
+	}
+	fmt.Println("执行:", sc.count)
+	wg.Wait()
+
+	// time.Sleep(time.Second * 3)
+	fmt.Println("count:", sc.count)
+
+}

@@ -1,0 +1,50 @@
+package main
+
+import (
+	"fmt"
+)
+
+func isValid(s string) bool {
+	runes := []rune(s)
+	xkhLeft := 0
+	xkhRight := 0
+	zkhLeft := 0
+	zkhRight := 0
+	dkhLeft := 0
+	dkhRight := 0
+	maps := map[string]int{}
+	for i := 0; i < len(runes); i++ {
+		maps[string(runes[i])] = i
+		switch string(runes[i]) {
+		case "(":
+			xkhLeft++
+		case ")":
+			xkhRight++
+		case "[":
+			zkhLeft++
+		case "]":
+			zkhRight++
+		case "{":
+			dkhLeft++
+		case "}":
+			dkhRight++
+		}
+	}
+
+	if xkhLeft != xkhRight || zkhLeft != zkhRight || dkhLeft != dkhRight {
+		return false
+	} else {
+		if maps["("] <= maps[")"] && maps["["] <= maps["]"] && maps["{"] <= maps["}"] {
+			return true
+		}
+		fmt.Print(maps)
+		return true
+	}
+
+}
+
+func main() {
+	isValid("{{[()]")
+	maps1 := map[string]int{}
+	fmt.Print(maps1["1"])
+}
