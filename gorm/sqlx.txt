@@ -1,0 +1,61 @@
+package main
+
+import (
+	"log"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
+)
+
+type Employees struct {
+	Id         uint    `db:"id"`
+	Name       string  `db:"name"`
+	Department string  `db:"department"`
+	Salary     float64 `db:"salary"`
+}
+
+type Book struct {
+	Id     uint    `db:"id"`
+	title  string  `db:"title"`
+	author string  `db:"author"`
+	price  float64 `db:"price"`
+}
+
+func main() {
+	db, err := sqlx.Connect("mysql", "root:root@tcp(127.0.0.1:3306)/web3?parseTime=true")
+	if err != nil {
+		log.Fatalln("连接数据库失败:", err)
+	}
+	defer db.Close()
+	// createSql := `CREATE TABLE IF NOT EXISTS Employees (
+	// 	id INT AUTO_INCREMENT PRIMARY KEY,
+	// 	name VARCHAR(50) NOT NULL,
+	// 	department VARCHAR(100) NOT NULL,
+	// 	salary float NOT NULL)`
+	// db.Exec(createSql)
+	// db.Exec("insert into Employees(name,department,salary)values(?,?,?)", "rolly", "技术部", 5000)
+	// db.Exec("insert into Employees(name,department,salary)values(?,?,?)", "wuding", "技术部", 6000)
+	// db.Exec("insert into Employees(name,department,salary)values(?,?,?)", "thq", "技术部", 7000)
+	// db.Exec("insert into Employees(name,department,salary)values(?,?,?)", "song", "业务部", 5000)
+	// db.Exec("insert into Employees(name,department,salary)values(?,?,?)", "yan", "运营部", 4000)
+	// db.Exec("insert into Employees(name,department,salary)values(?,?,?)", "liu", "业务部部", 6000)
+	// db.Exec("insert into Employees(name,department,salary)values(?,?,?)", "ding", "技术部", 8000)
+	// db.Exec("insert into Employees(name,department,salary)values(?,?,?)", "zuo", "普惠部", 5000)
+
+	///////////编写Go代码，使用Sqlx查询 employees 表中所有部门为 "技术部" 的员工信息，并将结果映射到一个自定义的 Employee 结构体切片中。
+	// var Eess []Employees
+	// db.Select(&Eess, "select * from Employees where department=?", "技术部")
+	// fmt.Println(Eess)
+	//////////////////编写Go代码，使用Sqlx查询 employees 表中工资最高的员工信息，并将结果映射到一个 Employee 结构体中
+	// var Employee Employees
+	// db.Get(&Employee, "select * from Employees order by salary desc limit 1")
+	// fmt.Println(Employee)
+
+	createSql := `CREATE TABLE IF NOT EXISTS Books (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		title VARCHAR(50) NOT NULL,
+		author VARCHAR(100) NOT NULL,
+		price float NOT NULL)`
+	db.Exec(createSql)
+
+}
