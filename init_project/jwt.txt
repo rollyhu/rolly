@@ -1,0 +1,30 @@
+	type MyClaims struct {
+	UserId string `json:"userId`
+	jwt.StandardClaims
+}
+
+	
+	//加密key
+	myKey := []byte("wshirolly")
+	c := MyClaims{
+		UserId: "rolly123",
+		StandardClaims: jwt.StandardClaims{
+			NotBefore: time.Now().Unix(),
+			ExpiresAt: time.Now().Unix() + 60,
+			Issuer:    "rolly",
+		},
+	}
+	tonken := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
+	fmt.Println("tonken:", tonken)
+	jmToken, err := tonken.SignedString(myKey)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("jmToken:", jmToken)
+
+	//解析
+
+	mytonken, _ := jwt.ParseWithClaims(jmToken, &MyClaims{}, func(t *jwt.Token) (interface{}, error) {
+		return myKey, nil
+	})
+	fmt.Println(mytonken.Claims.(*MyClaims).UserId)
