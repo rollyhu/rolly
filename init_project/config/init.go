@@ -2,13 +2,17 @@ package config
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/rs/zerolog"
 	"github.com/test/init_project/form"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var Db *gorm.DB
+
+var MyLoger zerolog.Logger
 
 // 初始gormDB
 func InitDB() {
@@ -29,4 +33,9 @@ func initTables(db *gorm.DB) {
 		fmt.Println(err)
 		return
 	}
+}
+
+func InitLog() {
+	MyLoger = zerolog.New(os.Stdout).With().Logger()
+	MyLoger.Info().Msg("初始化LOG---------------->>>>>>")
 }
