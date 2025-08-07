@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0<0.9.0;
+contract Hello {
+ 
+    //合并两个有序数组 (Merge Sorted Array)
+    // public int[] arr1;
+    // constructor(){}
+    function  sortTwoArr(int[] memory arr1  ,int[] memory arr2 )public pure returns (int[] memory){
+    int[] memory result=new int[](arr1.length+arr2.length);
+        for(uint256 i=0;i<arr1.length;i++){
+             if(arr1[i]<=arr2[0]){
+                    result[i]=arr1[i];
+                   
+                }else{
+                    result[i]=arr2[0];
+                    arr2[0]=arr1[i];
+                }
+            for(uint256 j=0;j<arr2.length;j++){
+               
+                    // break ;
+                    if((j<arr2.length-1)&&(arr2[j]>arr2[j+1])){
+                    int temp=arr2[j];
+                    arr2[j]=arr2[j+1];
+                    arr2[j+1]=temp;
+                }
+
+            }
+        }
+
+        for (uint i=0; i<arr2.length; i++) 
+        {
+                result[arr1.length+i]=arr2[i];
+        }
+        return result;
+
+    }
+ 
+}
