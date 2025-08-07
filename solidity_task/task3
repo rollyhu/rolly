@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0<0.9.0;
+contract Hello {
+ 
+    mapping (bytes1=>uint256)public lmMpa;
+
+    constructor (){
+        lmMpa['I']=1;
+        lmMpa['V']=5;
+        lmMpa['X']=10;
+        lmMpa['L']=50;
+        lmMpa['C']=100;
+        lmMpa['D']=500;
+        lmMpa['M']=1000;
+    }
+
+    function getInt( string calldata str) public view  returns ( uint256){
+        bytes memory bstr=bytes(str);
+        uint256 len=bstr.length;
+        int256 num=0;
+        // string memory temp;
+        for (uint i=0; i<len; i++) 
+        { 
+            bytes1 char=bstr[i]; 
+            uint256 mapValue=lmMpa[char];    
+            if((i<len-1)&&(mapValue<lmMpa[bstr[i+1]])){
+                num=num-int256(mapValue);
+            }else {
+                num=num+int256(mapValue);
+            }  
+        }
+        return uint256(num);
+    }
+ 
+}
