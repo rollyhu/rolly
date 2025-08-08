@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0<0.9.0;
+contract Hello {
+ 
+    //二分查找 (Binary Search)  找到目标值的位置
+    function binarySearch(int[] calldata arr,int target)public pure returns (int){
+
+        uint len = arr.length;
+        uint low=0;
+        uint high=len-1;
+        while (low<=high){
+            uint mid = (low+high)/2;
+            if(low==high-1&&arr[low]!=target&&arr[high]!=target){
+                return -1;//无此元素
+            }
+
+            if(target>arr[mid]){
+                low=mid;
+                if(arr[high]==target){
+                    return int(high);
+                }
+            }else if(target<arr[mid]){
+                high=mid;
+            }else if(target==arr[mid]){
+                return int(mid);
+            }
+
+
+        }
+        return -1;
+       
+    }
+ 
+}
