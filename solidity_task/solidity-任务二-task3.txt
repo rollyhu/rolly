@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract BeggingContract {
+    mapping(address=>uint) public donates;
+    address public owner;
+    uint public totalDonate;//捐赠的总余额
+    constructor(){
+        owner=msg.sender;
+    }
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Caller is not the owner");
+        _;
+    }
+
+    //捐赠
+    function donate()payable public{
+        donates[msg.sender]+=msg.value;
+        totalDonate+=msg.value;
+    }
+    
+    receive() external payable {
+        donate();
+     }
+     //允许合约所有者提取所有资金
+    function withdraw()payable onlyOwner public{
+        payable (msg.sender).transfer(totalDonate);
+        totalDonate=0;
+    }
+    //查询某个地址的捐赠金额
+    function getDonation (address addr) public view returns(uint) {
+        return donates[addr];
+    }
+    
+}
